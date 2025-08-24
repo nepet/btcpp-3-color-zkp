@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zero-Knowledge Proof: 3-Coloring Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Zero-Knowledge Proof: 3-Coloring Problem</h1>
+        <p>
+          Learn how zero-knowledge proofs work through an interactive
+          demonstration
+        </p>
+      </header>
+
+      <div class="main-content">
+        <div class="presentation-layout">
+          <div class="graph-section-large">
+            <h2>Interactive Zero-Knowledge Proof Demo</h2>
+            <div class="control-buttons">
+              <div class="node-selector">
+                <label for="nodeCount">Nodes:</label>
+                <select id="nodeCount">
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8" selected>8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="12">12</option>
+                </select>
+              </div>
+              <button id="autoMode" class="auto-button">Start Auto Mode</button>
+              <button id="hideVertices" disabled>Hide Colors</button>
+              <button id="revealAll">Reveal All</button>
+              <button id="resetGraph">Reset (New Graph)</button>
+            </div>
+            <div class="graph-container-large">
+              <canvas id="graphCanvas" width="800" height="600"></canvas>
+            </div>
+            <div class="graph-info">
+              <p>
+                Click on edges to verify their endpoints have different colors
+              </p>
+              <div class="info-row">
+                <div id="selectedVertices" class="selected-edge-info">
+                  <div class="nonces-title">Selected Edge Nonces</div>
+                  <div class="nonces-placeholder">Select an edge</div>
+                </div>
+                <div class="confidence-display" id="confidenceDisplay">
+                  <span class="confidence-label">Verifier Confidence:</span>
+                  <span class="confidence-value" id="confidenceValue"
+                    >0.0%</span
+                  >
+                  <span class="confidence-rounds" id="confidenceRounds"
+                    >(0 rounds)</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="commitments-section-sidebar">
+            <h3>Cryptographic Commitments</h3>
+            <div id="commitmentsList" class="commitments-vertical-grid"></div>
+          </div>
+        </div>
+
+        <div class="manual-verification-section">
+          <h3>Manual SHA-256 Verification</h3>
+          <p class="verification-explanation">
+            Verify any commitment manually by entering the vertex values:
+          </p>
+          <div class="manual-verification-grid">
+            <div class="manual-input-section">
+              <div class="input-group">
+                <label for="manualVertexId">Vertex ID:</label>
+                <input
+                  type="number"
+                  id="manualVertexId"
+                  min="0"
+                  max="7"
+                  placeholder="0-7"
+                />
+              </div>
+              <div class="input-group">
+                <label for="manualColor">Color Number:</label>
+                <input
+                  type="number"
+                  id="manualColor"
+                  min="0"
+                  max="2"
+                  placeholder="0-2"
+                />
+              </div>
+              <div class="input-group">
+                <label for="manualNonce">Nonce:</label>
+                <input
+                  type="text"
+                  id="manualNonce"
+                  placeholder="Enter nonce value"
+                />
+              </div>
+              <div class="input-group">
+                <label for="manualCommitment"
+                  >Commitment Hash (optional):</label
+                >
+                <input
+                  type="text"
+                  id="manualCommitment"
+                  placeholder="Enter commitment to compare"
+                />
+              </div>
+              <button id="calculateHash">Calculate & Compare</button>
+            </div>
+            <div class="manual-result-section">
+              <h4>Result:</h4>
+              <div id="manualResult" class="verification-code">
+                Enter values and click Calculate
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="verification-section-horizontal">
+          <h3>Verification Log</h3>
+          <div id="verificationLog"></div>
+        </div>
+
+        <div class="instructions-section">
+          <h2>Instructions</h2>
+          <div class="instruction-grid">
+            <div class="instruction">
+              <h3>1. Interactive Verification</h3>
+              <p>
+                Click on an edge to reveal its endpoints' colors and verify they
+                are different
+              </p>
+            </div>
+            <div class="instruction">
+              <h3>2. Cryptographic Commitment</h3>
+              <p>
+                Hash commitments prove we knew the solution before any
+                challenges - no cheating possible!
+              </p>
+            </div>
+            <div class="instruction">
+              <h3>3. Build Confidence</h3>
+              <p>
+                Each successful check increases confidence without revealing the
+                solution
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h2>How It Works</h2>
+        <div class="explanation">
+          <h3>The 3-Coloring Problem</h3>
+          <p>
+            Can you color each vertex of a graph with one of three colors such
+            that no two adjacent vertices share the same color? This is an
+            NP-complete problem.
+          </p>
+
+          <h3>Zero-Knowledge Proof</h3>
+          <p>
+            The prover can convince the verifier that they know a valid
+            3-coloring without revealing the actual coloring. Here's how:
+          </p>
+          <ol>
+            <li>
+              <strong>Commitment:</strong> Hide all vertex colors using
+              cryptographic commitments
+            </li>
+            <li>
+              <strong>Challenge:</strong> Verifier picks a random edge to check
+            </li>
+            <li>
+              <strong>Response:</strong> Reveal only the colors of the two
+              vertices connected by that edge
+            </li>
+          </ol>
+          <p>
+            By repeating this process many times, the verifier gains confidence
+            that the prover knows a valid coloring, without ever seeing the
+            complete solution.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="commitment-verification-section"
+      id="commitmentVerificationSection"
+      style="display: none"
+    >
+      <h3>Commitment Verification Process</h3>
+      <p class="verification-explanation">
+        Here's how we verify the cryptographic commitment:
+      </p>
+      <div class="verification-steps">
+        <div class="verification-step">
+          <h4>Step 1: Input Data</h4>
+          <div id="verificationInput" class="verification-code"></div>
+        </div>
+        <div class="verification-step">
+          <h4>Step 2: Hash Calculation</h4>
+          <div id="verificationCalculation" class="verification-code"></div>
+        </div>
+        <div class="verification-step">
+          <h4>Step 3: Comparison</h4>
+          <div id="verificationComparison" class="verification-code"></div>
+        </div>
+      </div>
+      <button id="hideVerification">Hide Verification Details</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
