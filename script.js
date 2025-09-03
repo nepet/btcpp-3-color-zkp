@@ -752,9 +752,13 @@ async function selectRandomEdge() {
       // Show detailed verification process
       await showCommitmentVerification(
         v1,
+        v2,
         verification.colors[0],
+        verification.colors[1],
         graph.nonces[v1],
-        graph.commitments[v1]
+        graph.nonces[v2],
+        graph.commitments[v1],
+        graph.commitments[v2]
       );
 
       if (verification.isValid) {
@@ -912,15 +916,28 @@ function updateCommitmentsDisplay() {
 }
 
 async function showCommitmentVerification(
-  vertexId,
-  color,
-  nonce,
-  storedCommitment
+  v1,
+  v2,
+  color1,
+  color2,
+  nonce1,
+  nonce2,
+  storedCommitment1,
+  storedCommitment2
 ) {
   const colorNames = ["Red", "Teal", "Yellow"];
-  const inputString = `${vertexId}-${color}-${nonce}`;
-  const calculatedHash = await graph.sha256Hash(inputString);
-  const isValid = calculatedHash === storedCommitment;
+  
+  // Calculate hashes for both vertices
+  const inputString1 = `${v1}-${color1}-${nonce1}`;
+  const inputString2 = `${v2}-${color2}-${nonce2}`;
+  const calculatedHash1 = await graph.sha256Hash(inputString1);
+  const calculatedHash2 = await graph.sha256Hash(inputString2);
+  
+  const isValid1 = calculatedHash1 === storedCommitment1;
+  const isValid2 = calculatedHash2 === storedCommitment2;
+  const colorsAreDifferent = color1 !== color2;
+  
+  const overallValid = isValid1 && isValid2 && colorsAreDifferent;
 
   // Show the verification section
   document.getElementById("commitmentVerificationSection").style.display =
@@ -929,31 +946,37 @@ async function showCommitmentVerification(
   // Step 1: Input Data
   document.getElementById(
     "verificationInput"
-  ).textContent = `Vertex ID: ${vertexId}
-Color: ${color} (${colorNames[color]})
-Nonce: ${nonce}
-Combined: "${inputString}"`;
+  ).textContent = `Vertex ${v1}: Color ${color1} (${colorNames[color1]}), Nonce: ${nonce1}
+Vertex ${v2}: Color ${color2} (${colorNames[color2]}), Nonce: ${nonce2}
+
+Combined strings:
+"${inputString1}"
+"${inputString2}"`;
 
   // Step 2: Hash Calculation
   document.getElementById(
     "verificationCalculation"
-  ).textContent = `SHA-256("${inputString}")
+  ).textContent = `SHA-256("${inputString1}") = ${calculatedHash1}
+SHA-256("${inputString2}") = ${calculatedHash2}
 
-Calculating SHA-256 hash...
-Result: ${calculatedHash} (first 16 chars)`;
+Both hashes calculated using SHA-256 algorithm`;
 
   // Step 3: Comparison
   document.getElementById(
     "verificationComparison"
-  ).textContent = `Calculated: ${calculatedHash}
-Stored:     ${storedCommitment}
+  ).textContent = `Vertex ${v1}: ${calculatedHash1} vs ${storedCommitment1} ${isValid1 ? "✓" : "✗"}
+Vertex ${v2}: ${calculatedHash2} vs ${storedCommitment2} ${isValid2 ? "✓" : "✗"}
+Colors different: ${color1} ≠ ${color2} ${colorsAreDifferent ? "✓" : "✗"}
 
-Match: ${isValid ? "✓ YES - Commitment verified!" : "✗ NO - Commitment failed!"}
+Overall Result: ${overallValid ? "✓ VALID - All checks passed!" : "✗ INVALID - One or more checks failed!"}
 
 ${
-  isValid
-    ? "This proves we knew the color before any challenge!"
-    : "This indicates potential cheating or data corruption."
+  overallValid
+    ? "Both commitments verified AND colors are different - proof is valid!"
+    : "Verification failed: " + 
+      (!isValid1 ? `V${v1} commitment mismatch ` : "") +
+      (!isValid2 ? `V${v2} commitment mismatch ` : "") +
+      (!colorsAreDifferent ? "Colors are the same!" : "")
 }`;
 }
 
@@ -1152,9 +1175,13 @@ document
           // Show detailed verification process
           await showCommitmentVerification(
             v1,
+            v2,
             verification.colors[0],
+            verification.colors[1],
             graph.nonces[v1],
-            graph.commitments[v1]
+            graph.nonces[v2],
+            graph.commitments[v1],
+            graph.commitments[v2]
           );
 
           if (verification.isValid) {

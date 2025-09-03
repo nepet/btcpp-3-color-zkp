@@ -162,14 +162,17 @@
           </p>
           <ol>
             <li>
+              <strong>Permutation:</strong> Randomly scramble the three colors (e.g., Red→Teal, Teal→Yellow, Yellow→Red) while preserving the coloring validity
+            </li>
+            <li>
               <strong>Commitment:</strong> Hide all vertex colors using
-              cryptographic commitments
+              cryptographic commitments with random nonces
             </li>
             <li>
               <strong>Challenge:</strong> Verifier picks a random edge to check
             </li>
             <li>
-              <strong>Response:</strong> Reveal only the colors of the two
+              <strong>Response:</strong> Reveal only the colors and nonces of the two
               vertices connected by that edge
             </li>
           </ol>
@@ -180,34 +183,32 @@
           </p>
         </div>
       </div>
-    </div>
-
-    <div
-      class="commitment-verification-section"
-      id="commitmentVerificationSection"
-      style="display: none"
-    >
-      <h3>Commitment Verification Process</h3>
-      <p class="verification-explanation">
-        Here's how we verify the cryptographic commitment:
-      </p>
-      <div class="verification-steps">
-        <div class="verification-step">
-          <h4>Step 1: Input Data</h4>
-          <div id="verificationInput" class="verification-code"></div>
+      <div
+        class="commitment-verification-section"
+        id="commitmentVerificationSection"
+        style="display: none"
+      >
+        <h3>Commitment Verification Process</h3>
+        <p class="verification-explanation">
+          Here's how we verify the cryptographic commitment:
+        </p>
+        <div class="verification-steps">
+          <div class="verification-step">
+            <h4>Step 1: Input Data</h4>
+            <div id="verificationInput" class="verification-code"></div>
+          </div>
+          <div class="verification-step">
+            <h4>Step 2: Hash Calculation</h4>
+            <div id="verificationCalculation" class="verification-code"></div>
+          </div>
+          <div class="verification-step">
+            <h4>Step 3: Comparison</h4>
+            <div id="verificationComparison" class="verification-code"></div>
+          </div>
         </div>
-        <div class="verification-step">
-          <h4>Step 2: Hash Calculation</h4>
-          <div id="verificationCalculation" class="verification-code"></div>
-        </div>
-        <div class="verification-step">
-          <h4>Step 3: Comparison</h4>
-          <div id="verificationComparison" class="verification-code"></div>
-        </div>
+        <button id="hideVerification">Hide Verification Details</button>
       </div>
-      <button id="hideVerification">Hide Verification Details</button>
     </div>
-
     <script src="script.js"></script>
   </body>
 </html>
