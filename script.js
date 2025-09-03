@@ -968,31 +968,18 @@ function logVerification(message) {
   log.scrollTop = log.scrollHeight;
 }
 
-document
-  .getElementById("nodeCount")
-  .addEventListener("change", async (event) => {
-    // Stop auto mode if active
+const autoModeElement = document.getElementById("autoMode");
+if (!autoModeElement) {
+  console.error("autoMode element not found!");
+} else {
+  autoModeElement.addEventListener("click", () => {
     if (autoMode.active) {
       stopAutoMode();
+    } else {
+      startAutoMode();
     }
-
-    const nodeCount = parseInt(event.target.value);
-    await zkp.resetToNewGraph(nodeCount);
-    renderer.render();
-    updateUI();
-    // Hide verification details when resetting
-    document.getElementById("commitmentVerificationSection").style.display =
-      "none";
-    logVerification(`Generated new graph with ${nodeCount} vertices`);
   });
-
-document.getElementById("autoMode").addEventListener("click", () => {
-  if (autoMode.active) {
-    stopAutoMode();
-  } else {
-    startAutoMode();
-  }
-});
+}
 
 document.getElementById("hideVertices").addEventListener("click", async () => {
   await zkp.scrambleColors();
@@ -1015,8 +1002,8 @@ document.getElementById("resetGraph").addEventListener("click", async () => {
     stopAutoMode();
   }
 
-  // Get the currently selected node count
-  const nodeCount = parseInt(document.getElementById("nodeCount").value);
+  // Use default node count of 8
+  const nodeCount = 8;
   await zkp.resetToNewGraph(nodeCount);
   renderer.render();
   updateUI();
