@@ -92,7 +92,6 @@ header h1 {
   align-items: center;
 }
 
-
 .presentation-layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -304,31 +303,44 @@ header h1 {
 }
 
 .selected-edge-info .nonce-item-label {
-  font-size: 12px;
+  font-size: 20px;
   margin-bottom: 4px;
   opacity: 0.9;
+  font-weight: 700;
 }
 
 .selected-edge-info .nonce-item-value {
   font-weight: 700;
   letter-spacing: 1px;
-  cursor: pointer;
-  user-select: all;
+  cursor: default;
+  user-select: none;
   padding: 2px 4px;
   border-radius: 3px;
   transition: all 0.2s ease;
 }
 
-.selected-edge-info .nonce-item-value:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
+
+.selectable-nonce {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  user-select: all;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.selectable-nonce:hover {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.02);
 }
 
 .selected-edge-info .nonces-placeholder {
   color: rgba(255, 255, 255, 0.7);
   font-style: italic;
   text-align: center;
-  font-size: 14px;
+  font-size: 24px;
 }
 
 /* Always apply nonces styling - same height as confidence display */
@@ -526,7 +538,7 @@ header h1 {
 
 .manual-verification-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 25px;
   align-items: start;
 }
@@ -590,6 +602,14 @@ header h1 {
   align-items: center;
   justify-content: center;
   text-align: center;
+  font-size: 32px;
+  font-weight: 900;
+  color: #333;
+  padding: 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 3px solid #17a2b8;
+  box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
 }
 
 .color-legend-section {

@@ -837,7 +837,6 @@ function updateUI() {
 
   if (zkp.selectedEdgeIndex === null) {
     document.getElementById("selectedVertices").innerHTML = `
-      <div class="nonces-title">Selected Edge Nonces</div>
       <div class="nonces-placeholder">Select an edge</div>
     `;
   } else {
@@ -851,15 +850,14 @@ function updateUI() {
     const color1 = graph.vertexColors[v1];
     const color2 = graph.vertexColors[v2];
     document.getElementById("selectedVertices").innerHTML = `
-      <div class="nonces-title">Selected Edge Nonces:</div>
       <div class="nonces-list">
         <div class="nonce-item">
-          <div class="nonce-item-label">V${v1} (Color ${color1}) Nonce:</div>
-          <div class="nonce-item-value">${nonce1}</div>
+          <div class="nonce-item-label">Id: ${v1}, Color: ${color1}</div>
+          <div class="nonce-item-value">Randomness:</br><span class="selectable-nonce">${nonce1}</span></div>
         </div>
         <div class="nonce-item">
-          <div class="nonce-item-label">V${v2} (Color ${color2}) Nonce:</div>
-          <div class="nonce-item-value">${nonce2}</div>
+          <div class="nonce-item-label">Id: ${v2}, Color: ${color2}</div>
+          <div class="nonce-item-value">Randomness:</br><span class="selectable-nonce">${nonce2}</span></div>
         </div>
       </div>
     `;
@@ -1048,33 +1046,16 @@ document.getElementById("calculateHash").addEventListener("click", async () => {
   try {
     const inputString = `${vertexId}-${color}-${nonce}`;
     const hash = await graph.sha256Hash(inputString);
-    const colorNames = ["Red", "Teal", "Yellow"];
 
-    let result = `<strong>SHA-256 Hash:</strong> ${hash}`;
-
+    let result;
     if (commitment) {
       const isMatch = hash === commitment;
-      result += `
-
-<strong>Comparison:</strong>
-Calculated: ${hash}
-Commitment: ${commitment}
-
-<strong>Result:</strong> ${
-        isMatch
-          ? "✓ MATCH - Commitment verified!"
-          : "✗ NO MATCH - Verification failed"
-      }`;
-
-      if (isMatch) {
-        result += `
-<em>This proves the vertex ${vertexId} was committed to color ${parseInt(
-          color
-        )} (${colorNames[parseInt(color)]}) with nonce "${nonce}"</em>`;
-      }
+      result = isMatch ? "Match" : "No Match";
+    } else {
+      result = `Commitment: ${hash}`;
     }
 
-    document.getElementById("manualResult").innerHTML = result;
+    document.getElementById("manualResult").textContent = result;
   } catch (error) {
     document.getElementById("manualResult").textContent =
       "Error calculating hash: " + error.message;
